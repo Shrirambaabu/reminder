@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.AddNotesActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/text_background"
+            android:focusableInTouchMode="true">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/textInputEditTextName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/white"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="Name"
+                android:importantForAutofill="noExcludeDescendants"
+                android:inputType="text|textNoSuggestions"
+                android:maxLines="1"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:textColor="@android:color/black" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutSpinner"
+            android:layout_below="@+id/textInputLayoutName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:hint="Priority"
+            android:background="@drawable/text_background"
+            android:focusableInTouchMode="true">
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutDate"
+            android:layout_below="@+id/textInputLayoutSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/text_background"
+            android:focusableInTouchMode="true">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/textInputEditTextDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/white"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="Date"
+                android:importantForAutofill="noExcludeDescendants"
+                android:inputType="text|textNoSuggestions"
+                android:maxLines="1"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:textColor="@android:color/black" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/save_notes"
+            android:layout_below="@+id/textInputLayoutDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="72dp"
+            android:layout_marginEnd="72dp"
+            android:text="Save"
+            android:textColor="@android:color/white" />
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>
