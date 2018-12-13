@@ -21,7 +21,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import fr.ganfra.materialspinner.MaterialSpinner;
 import in.myreminder.srb.R;
 import in.myreminder.srb.adapter.MyReminderAdapter;
 import in.myreminder.srb.database.DatabaseHelper;

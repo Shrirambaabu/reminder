@@ -9,18 +9,28 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import in.myreminder.srb.model.MyAlert;
 import in.myreminder.srb.model.MyNotes;
 
-public class DatabaseHelper  extends SQLiteOpenHelper {
+public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
+
     private static final String DATABASE_NAME = "myreminder";
+
     private static final String TABLE_NOTES = "notes";
     private static final String KEY_ID = "id";
     private static final String NOTES_NAME = "note_name";
     private static final String NOTES_PRIORITY = "priority";
     private static final String NOTES_DATE = "notes_date";
     private static final String NOTES_READ = "notes_read";
+
+
+    private static final String TABLE_ALERT = "reminder";
+    private static final String ALERT_ID = "alert_id";
+    private static final String ALERT_TIME = "alert_time";
+    private static final String ALERT_READ = "alert_read";
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -32,7 +42,10 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
 
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_NOTES + "(" + KEY_ID + " INTEGER PRIMARY KEY," + NOTES_NAME + " TEXT," + NOTES_PRIORITY + " TEXT," + NOTES_DATE + " TEXT," + NOTES_READ + " TEXT" + ")";
+        String CREATE_ALERT_TABLE = "CREATE TABLE " + TABLE_ALERT + "(" + ALERT_ID + " INTEGER PRIMARY KEY," + ALERT_TIME + " TEXT," + ALERT_READ + " TEXT" + ")";
+
         sqLiteDatabase.execSQL(CREATE_CONTACTS_TABLE);
+        sqLiteDatabase.execSQL(CREATE_ALERT_TABLE);
 
     }
 
@@ -40,6 +53,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         // Drop older table if existed
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ALERT);
 
         // Create tables again
         onCreate(sqLiteDatabase);
@@ -60,6 +74,43 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         //2nd argument is String containing nullColumnHack
         db.close(); // Closing database connection
         return rowInserted;
+    }
+    public long addAlert(MyAlert myAlert) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ALERT_TIME, myAlert.getAlertTime()); // Notes Name
+        values.put(ALERT_READ, myAlert.getAlertRead());
+
+        // Inserting Row
+        long rowInserted = db.insert(TABLE_ALERT, null, values);
+        Log.e("SSId", "" + rowInserted);
+        //2nd argument is String containing nullColumnHack
+        db.close(); // Closing database connection
+        return rowInserted;
+    }
+
+    public ArrayList<MyAlert> getAllAlerts() {
+        ArrayList<MyAlert> myAlertArrayList = new ArrayList<MyAlert>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_ALERT;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                MyAlert myAlertModel = new MyAlert();
+                myAlertModel.setAlertId(Integer.parseInt(cursor.getString(0)));
+                myAlertModel.setAlertTime(cursor.getString(1));
+                myAlertModel.setAlertRead(cursor.getString(2));
+                myAlertArrayList.add(myAlertModel);
+            } while (cursor.moveToNext());
+        }
+
+        // return contact list
+        return myAlertArrayList;
     }
 
     public ArrayList<MyNotes> getAllNotes() {
@@ -112,19 +163,37 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         return myNotesArrayList;
     }
 
-    public int updateNotes(int notesId,String status) {
+    public int updateNotes(int notesId, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(NOTES_READ,status);// Notes Read
+        values.put(NOTES_READ, status);// Notes Read
 
         // updating row
         return db.update(TABLE_NOTES, values, KEY_ID + " = ?",
                 new String[]{String.valueOf(notesId)});
     }
+    public int updateAlert(int alertId, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ALERT_READ, status);// Notes Read
+
+        // updating row
+        return db.update(TABLE_ALERT, values, ALERT_ID + " = ?",
+                new String[]{String.valueOf(alertId)});
+    }
+
     public void deleteNotes(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NOTES, KEY_ID + " = ?",
+                new String[]{id});
+        db.close();
+    }
+
+    public void deleteAlert(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_ALERT, ALERT_ID + " = ?",
                 new String[]{id});
         db.close();
     }

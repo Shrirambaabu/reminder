@@ -1,19 +1,27 @@
 package in.myreminder.srb.activity;
 
+import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.RelativeLayout;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import in.myreminder.srb.R;
 import in.myreminder.srb.adapter.AlertAdapter;
+import in.myreminder.srb.database.DatabaseHelper;
 import in.myreminder.srb.model.MyAlert;
 import in.myreminder.srb.utils.EmptyRecyclerView;
 
@@ -28,7 +36,7 @@ public class AddReminderActivity extends AppCompatActivity implements SwipeRefre
     EmptyRecyclerView emptyRecyclerView;
     @BindView(R.id.empty_view)
     RelativeLayout emptyView;
-
+    DatabaseHelper db;
     private ArrayList<MyAlert> myAlertArrayList = new ArrayList<MyAlert>();
     private AlertAdapter alertAdapter;
 
@@ -36,6 +44,7 @@ public class AddReminderActivity extends AppCompatActivity implements SwipeRefre
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_reminder);
+        db = new DatabaseHelper(this);
         ButterKnife.bind(this);
         backButtonOnToolbar(this);
         setupRecyclerView();
@@ -44,15 +53,10 @@ public class AddReminderActivity extends AppCompatActivity implements SwipeRefre
     }
 
     private void getAlertList() {
+        myAlertArrayList.clear();
 
-        MyAlert myAlertModel = new MyAlert();
+        myAlertArrayList.addAll(db.getAllAlerts());
 
-        myAlertArrayList.add(myAlertModel);
-        myAlertArrayList.add(myAlertModel);
-        myAlertArrayList.add(myAlertModel);
-        myAlertArrayList.add(myAlertModel);
-        myAlertArrayList.add(myAlertModel);
-        myAlertArrayList.add(myAlertModel);
         alertAdapter.notifyDataSetChanged();
     }
 
@@ -83,5 +87,73 @@ public class AddReminderActivity extends AppCompatActivity implements SwipeRefre
     @Override
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(false);
+        getAlertList();
+    }
+
+    @OnClick(R.id.add_reminder)
+    public void addReminder() {
+        Calendar mcurrentTime = Calendar.getInstance();
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = mcurrentTime.get(Calendar.MINUTE);
+        TimePickerDialog mTimePicker;
+        mTimePicker = new TimePickerDialog(AddReminderActivity.this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                //  eReminderTime.setText( selectedHour + ":" + selectedMinute);
+
+                Log.e("Time", "" + selectedHour + ":" + selectedMinute);
+                String hourFinal = "", minuteFinal = "", meridian = "";
+
+                if (selectedHour == 0) {
+                    selectedHour = 12;
+                    meridian = "AM";
+                } else if (selectedHour < 12) {
+                    selectedHour = selectedHour;
+                    meridian = "AM";
+                } else if (selectedHour == 12) {
+                    selectedHour = selectedHour;
+                    meridian = "PM";
+                } else {
+                    selectedHour = selectedHour - 12;
+                    meridian = "PM";
+                }
+
+                if (selectedHour < 10) {
+                    hourFinal = "0" + selectedHour;
+                } else {
+                    hourFinal = "" + selectedHour;
+                }
+
+                if (selectedMinute < 10) {
+                    minuteFinal = "0" + selectedMinute;
+                } else {
+                    minuteFinal = "" + selectedMinute;
+                }
+
+                Log.e("Converted", "" + hourFinal + ":" + minuteFinal + " " + meridian);
+                String selectedTime = "" + hourFinal + ":" + minuteFinal + " " + meridian;
+                addReminderValue(selectedTime);
+
+
+            }
+        }, hour, minute, false);//Yes 24 hour time
+        mTimePicker.setTitle("Select Time");
+        mTimePicker.show();
+    }
+
+    private void addReminderValue(String selectedTime) {
+
+        MyAlert myAlert = new MyAlert();
+        myAlert.setAlertTime(selectedTime);
+        myAlert.setAlertRead("1");
+
+        long rowInserted = db.addAlert(myAlert);
+        if (rowInserted != -1) {
+            Toast.makeText(getApplicationContext(), "Reminder Added", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(AddReminderActivity.this, AddReminderActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
     }
 }
