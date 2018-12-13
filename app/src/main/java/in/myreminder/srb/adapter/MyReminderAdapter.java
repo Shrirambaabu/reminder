@@ -63,23 +63,24 @@ public class MyReminderAdapter extends RecyclerView.Adapter<MyReminderAdapter.My
             holder.notePriority.setTextColor(Color.parseColor("#F44336"));
         }
 
-        if ( myNotesArrayList.get(position).getNotesRead().equals("1")) {
+        if (myNotesArrayList.get(position).getNotesRead().equals("1")) {
             holder.checkBox.setChecked(true);
-            holder.checkBox.setEnabled(false);
+        }else {
+            holder.checkBox.setChecked(false);
         }
 
         holder.checkBox.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
-                Log.e("Chec", "" + isChecked + ":Pos:" +  myNotesArrayList.get(position).getNotesId());
+                Log.e("Chec", "" + isChecked + ":Pos:" + myNotesArrayList.get(position).getNotesId());
 
                 if (isChecked) {
-                    if (myNotesArrayList.get(position).getNotesRead().equals("0")) {
-                        myNotesArrayList.get(position).setNotesRead("1");
-                        changeCheckStatus(myNotesArrayList.get(position).getNotesId());
-                    }
-                }else {
+                    myNotesArrayList.get(position).setNotesRead("1");
+                    changeCheckStatus(myNotesArrayList.get(position).getNotesId(), "1");
 
+                } else {
+                    myNotesArrayList.get(position).setNotesRead("0");
+                    changeCheckStatus(myNotesArrayList.get(position).getNotesId(), "0");
                 }
 
             }
@@ -87,9 +88,9 @@ public class MyReminderAdapter extends RecyclerView.Adapter<MyReminderAdapter.My
 
     }
 
-    private void changeCheckStatus(int notesId) {
-        databaseHelper.updateNotes(notesId);
-        notifyDataSetChanged();
+    private void changeCheckStatus(int notesId, String status) {
+        databaseHelper.updateNotes(notesId, status);
+       // notifyDataSetChanged();
 
     }
 

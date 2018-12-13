@@ -4,31 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.AddReminderActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/date_value"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:text="12 Dec 2018"
-            android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
-            android:textSize="16sp" />
-
 
         <android.support.v4.widget.SwipeRefreshLayout
 
             android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/date_value"
             android:layout_marginBottom="60dp">
 
             <RelativeLayout
@@ -80,15 +66,14 @@
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <Button
-            android:id="@+id/add_notes"
+            android:id="@+id/add_reminder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/colorPrimary"
-            android:text="Add Notes"
+            android:text="Add Reminder"
             android:textColor="@android:color/white" />
 
     </RelativeLayout>
-
 
 </android.support.constraint.ConstraintLayout>

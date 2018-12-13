@@ -86,11 +86,37 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         // return contact list
         return myNotesArrayList;
     }
-    public int updateNotes(int notesId) {
+
+    public ArrayList<MyNotes> getParticularNote(String selectedDate) {
+        ArrayList<MyNotes> myNotesArrayList = new ArrayList<MyNotes>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_NOTES + " WHERE " + NOTES_DATE + "=" + "\"" + selectedDate + "\"";
+        Log.e("SS", "" + selectQuery);
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                MyNotes myNotesModel = new MyNotes();
+                myNotesModel.setNotesId(Integer.parseInt(cursor.getString(0)));
+                myNotesModel.setNotesName(cursor.getString(1));
+                myNotesModel.setNotesPriority(cursor.getString(2));
+                myNotesModel.setNotesDate(cursor.getString(3));
+                myNotesModel.setNotesRead(cursor.getString(4));
+                myNotesArrayList.add(myNotesModel);
+            } while (cursor.moveToNext());
+        }
+
+        // return contact list
+        return myNotesArrayList;
+    }
+
+    public int updateNotes(int notesId,String status) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(NOTES_READ,"1");// Notes Read
+        values.put(NOTES_READ,status);// Notes Read
 
         // updating row
         return db.update(TABLE_NOTES, values, KEY_ID + " = ?",
