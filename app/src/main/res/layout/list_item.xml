@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="96dp"
+    android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:background="@drawable/corner_card"
     android:elevation="8dp"
@@ -15,27 +16,14 @@
 
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/note_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="My "
+            android:text="My Note"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimary"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:text="Rs. 80"
-            android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -43,11 +31,37 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/name"
+            android:layout_below="@+id/note_name"
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
+            android:layout_marginBottom="4dp"
             android:text="12-10-2018"
             android:textSize="14sp" />
+
+
+        <TextView
+            android:id="@+id/priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/date"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Priority"
+            android:textSize="14sp" />
+
+        <net.igenius.customcheckbox.CustomCheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_alignParentEnd="true"
+            app:color_checked="@color/colorPrimary"
+            app:color_tick="@android:color/white"
+            app:color_unchecked="#EEEEEE"
+            app:color_unchecked_stroke="#EEEEEE"
+            app:small_tick="true" />
 
     </RelativeLayout>
 

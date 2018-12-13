@@ -2,7 +2,7 @@ package in.myreminder.srb.model;
 
 public class MyNotes {
 
-    private String notesId;
+    private int notesId;
     private String notesName;
     private String notesDate;
     private String notesPriority;
@@ -11,11 +11,11 @@ public class MyNotes {
     public MyNotes() {
     }
 
-    public String getNotesId() {
+    public int getNotesId() {
         return notesId;
     }
 
-    public void setNotesId(String notesId) {
+    public void setNotesId(int notesId) {
         this.notesId = notesId;
     }
 

@@ -1,8 +1,15 @@
 package in.myreminder.srb.database;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.util.ArrayList;
+
+import in.myreminder.srb.model.MyNotes;
 
 public class DatabaseHelper  extends SQLiteOpenHelper {
 
@@ -38,6 +45,62 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
+    public long addNotes(MyNotes myNotes) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
+        ContentValues values = new ContentValues();
+        values.put(NOTES_NAME, myNotes.getNotesName()); // Notes Name
+        values.put(NOTES_PRIORITY, myNotes.getNotesPriority()); // Notes Priority
+        values.put(NOTES_DATE, myNotes.getNotesDate()); // Notes date
+        values.put(NOTES_READ, myNotes.getNotesRead()); // Notes Read
+
+        // Inserting Row
+        long rowInserted = db.insert(TABLE_NOTES, null, values);
+        Log.e("SSId", "" + rowInserted);
+        //2nd argument is String containing nullColumnHack
+        db.close(); // Closing database connection
+        return rowInserted;
+    }
+
+    public ArrayList<MyNotes> getAllNotes() {
+        ArrayList<MyNotes> myNotesArrayList = new ArrayList<MyNotes>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_NOTES;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                MyNotes myNotesModel = new MyNotes();
+                myNotesModel.setNotesId(Integer.parseInt(cursor.getString(0)));
+                myNotesModel.setNotesName(cursor.getString(1));
+                myNotesModel.setNotesPriority(cursor.getString(2));
+                myNotesModel.setNotesDate(cursor.getString(3));
+                myNotesModel.setNotesRead(cursor.getString(4));
+                myNotesArrayList.add(myNotesModel);
+            } while (cursor.moveToNext());
+        }
+
+        // return contact list
+        return myNotesArrayList;
+    }
+    public int updateNotes(int notesId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NOTES_READ,"1");// Notes Read
+
+        // updating row
+        return db.update(TABLE_NOTES, values, KEY_ID + " = ?",
+                new String[]{String.valueOf(notesId)});
+    }
+    public void deleteNotes(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NOTES, KEY_ID + " = ?",
+                new String[]{id});
+        db.close();
+    }
 
 }
