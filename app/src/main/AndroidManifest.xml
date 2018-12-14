@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="in.myreminder.srb">
 
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="your.package.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -29,19 +28,14 @@
         <activity
             android:name=".activity.AddReminderActivity"
             android:label="Add Reminder" />
-        <receiver android:name="AlarmBroadcaster" />
+
         <service
-            android:name="NotificationTrigger"
-            android:exported="false" />
+            android:name=".AlarmService"
+            android:enabled="true" />
 
-        <receiver
-            android:name="DeviceBootReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
+        <receiver android:name=".AlarmReceiver" />
 
+        <activity android:name=".activity.ShowAlarmActivity" android:label="Alarm !!!"/>
     </application>
 
 </manifest>

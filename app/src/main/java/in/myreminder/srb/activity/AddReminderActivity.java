@@ -22,7 +22,7 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import in.myreminder.srb.AlarmBroadcaster;
+import in.myreminder.srb.AlarmReceiver;
 import in.myreminder.srb.R;
 import in.myreminder.srb.adapter.AlertAdapter;
 import in.myreminder.srb.database.DatabaseHelper;
@@ -43,6 +43,12 @@ public class AddReminderActivity extends AppCompatActivity implements SwipeRefre
     DatabaseHelper db;
     private ArrayList<MyAlert> myAlertArrayList = new ArrayList<MyAlert>();
     private AlertAdapter alertAdapter;
+    private static AddReminderActivity inst;
+    String alarmIntent = "";
+
+    static AlarmManager alarmManager;
+    private static PendingIntent pendingIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +57,28 @@ public class AddReminderActivity extends AppCompatActivity implements SwipeRefre
         db = new DatabaseHelper(this);
         ButterKnife.bind(this);
         backButtonOnToolbar(this);
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         setupRecyclerView();
         swipeRefreshLayout.setOnRefreshListener(this);
         getAlertList();
+        setAlaram();
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        inst = this;
+    }
+
+    private void setAlaram() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 17);
+        calendar.set(Calendar.MINUTE, 18);
+        Intent myIntent = new Intent(AddReminderActivity.this, AlarmReceiver.class);
+        myIntent.putExtra("alarm", "alarm");
+        pendingIntent = PendingIntent.getBroadcast(AddReminderActivity.this, 0, myIntent, 0);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
     private void getAlertList() {
@@ -161,25 +186,27 @@ public class AddReminderActivity extends AppCompatActivity implements SwipeRefre
         }
     }
 
+    public void setAlarmText() {
 
-    public void alarmSetter(Context context) {
+        Intent intent = new Intent(getApplicationContext(), ShowAlarmActivity.class);
+        intent.putExtra("pend", pendingIntent);
+        startActivity(intent);
+    }
 
-        //This will set the alarm time to be at the 14:30
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 22);
-        calendar.set(Calendar.MINUTE, 27);
+    public static void cancelAlarm() {
+        Log.e("Cancel", "func");
+        Log.e("Cancel", "alarmManager:" + alarmManager);
+        if (alarmManager != null) {
 
-        //This intent, will execute the AlarmBroadcaster when the alarm is triggered
-        Intent alertIntent = new Intent(context, AlarmBroadcaster.class);
+            Log.e("Cancel", "canS");
+            alarmManager.cancel(pendingIntent);
+            Log.e("Cancel", "canF");
+        }
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
     }
 
-
+    public static AddReminderActivity instance() {
+        return inst;
+    }
 }
